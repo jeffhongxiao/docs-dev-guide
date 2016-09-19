@@ -429,7 +429,7 @@ The command line option that corresponds to this attribute is `--no-route`.
 
 In the newer Diego architecture, `no-route` skips creating and binding a route for the app, but does not specify which type of health check to perform. If your app does not listen on a port because it is a worker or a scheduler app, then it does not satisfy the port-based health check and Cloud Foundry marks it as crashed. To prevent this, disable the port-based health check with `cf set-health-check APP_NAME none`.
 
-In the older Droplet Execution Agent (DEA) architecture, `cf set-health-check APP_NAME none` is unnecessary because `no-route` causes the DEAs to skip the port health-check on app startup.
+<%=vars.dea_health_check%>
 
 To remove a route from an existing app, perform the following steps:
 

@@ -103,8 +103,7 @@ The list of mappings between internal (container-side) and external
 Note that not all of the internal ports are necessarily available for the
 application to bind to, as some of them may be used by system-provided
 services that also run inside the container.
-On the DEAs, these internal and external values will be the same, but on Diego
-Cells, they may differ.
+<%=vars.dea_instance_ports%>
 
 `CF_INSTANCE_PORTS=[{external:61045,internal:5678},{external:61046,internal:2222}]`
 
@@ -150,13 +149,7 @@ The user account under which the application runs.
 
 `USER=vcap`
 
-### <a id='VCAP-APP-HOST'></a>VCAP\_APP\_HOST
-
-The IP address of the host. Deprecated: the DEAs set this to be `0.0.0.0`,
-and Diego Cells do not provide this environment variable.
-
-`VCAP_APP_HOST=0.0.0.0`
-
+<%=vars.vcap_app_host%>
 
 ### <a id='VCAP-APP-PORT'></a>VCAP\_APP\_PORT ###
 
