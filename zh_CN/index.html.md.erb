@@ -1,85 +1,82 @@
 ---
-title: Developer Guide
+title: 开发人员指南
 ---
 
-This guide has instructions for pushing an application to Cloud Foundry and
-making the application work with any available cloud-based services it uses,
-such as databases, email, or message servers.
-The core of this guide is the [Deploy an Application](./deploy-apps/deploy-app.html) process guide, which provides 
-end-to-end instructions for deploying and running applications on Cloud 
-Foundry, including tips for troubleshooting deployment and application health 
-issues.
+本指南说明如何将应用发布到Cloud Foundry并令其工作在任何可用的基于云的服务上.
+这些服务包括数据库, email, 或者消息服务器(message server).
+本指南的核心是[部署应用](./deploy-apps/deploy-app.html)过程指南.
+它提供了端到端如何在Cloud Foundry上部署和运行应用的说明, 还包括了关于部署和应用健康问题的troubleshooting
 
-Before you can use the instructions in this document, you must have an account 
-on your Cloud Foundry instance.
+在你开始使用本说明之前, 你需要在Cloud Foundry有一个帐号.
 
 ___
 
-## <a id='prepare'></a>Preparing Applications for the Cloud ##
+## <a id='prepare'></a>为云环境准备好应用程序 ##
 
-* <a href="./deploy-apps/prepare-to-deploy.html" class="subnav">Considerations for Designing and Running an Application in the Cloud</a>
+* <a href="./deploy-apps/prepare-to-deploy.html" class="subnav">
+  在云环境上设计和运行应用程序的注意事项</a>
 
 ___
 
-## <a id='deploy'></a>Deploying and Managing Applications ##
+## <a id='deploy'></a>部署和管理应用程序 ##
 
 <ul>
-<li><a href="./deploy-apps/deploy-app.html" class="subnav">Deploy an Application</a></li>
+<li><a href="./deploy-apps/deploy-app.html" class="subnav">部署应用程序</a></li>
 
-<li><a href="./deploy-apps/large-app-deploy.html" class="subnav">Deploy a Large Application</a></li>
+<li><a href="./deploy-apps/large-app-deploy.html" class="subnav">部署大型应用程序</a></li>
 
-<li><a href="./deploy-apps/start-restart-restage.html" class="subnav">Starting, Restarting, and Restaging Applications</a></li>
+<li><a href="./deploy-apps/start-restart-restage.html" class="subnav">启动,重启和Restaging应用程序</a></li>
 
-<li><a href="./deploy-apps/app-lifecycle.html" class="subnav">Application Container Lifecycle</a></li>
+<li><a href="./deploy-apps/app-lifecycle.html" class="subnav">应用程序容器的生命周期</a></li>
 
-<li><a href="./deploy-apps/routes-domains.html" class="subnav">Routes and Domains</a></li>
+<li><a href="./deploy-apps/routes-domains.html" class="subnav">路由和域</a></li>
 
-<li><a href="./deploy-apps/stacks.html" class="subnav">Changing Stacks</a></li>
+<li><a href="./deploy-apps/stacks.html" class="subnav">改变Stacks</a></li>
 
-<li><a href="./deploy-apps/manifest.html" class="subnav">Deploying with Application Manifests</a></li>
+<li><a href="./deploy-apps/manifest.html" class="subnav">用部署文件Manifest部署应用程序</a></li>
 
-<li><a href="./deploy-apps/cf-scale.html" class="subnav">Scaling an Application Using cf scale</a></li>
+<li><a href="./deploy-apps/cf-scale.html" class="subnav">用cf scale 来scale一个应用程序</a></li>
 
 <%=vars.autoscaler_bullet%>
 
-<li><a href="./deploy-apps/environment-variable.html" class="subnav">Cloud Foundry Environment Variables</a></li>
+<li><a href="./deploy-apps/environment-variable.html" class="subnav">Cloud Foundry的环境变量</a></li>
 
-<li><a href="./deploy-apps/blue-green.html" class="subnav">Using Blue-Green Deployment to Reduce Downtime and Risk</a></li>
+<li><a href="./deploy-apps/blue-green.html" class="subnav">使用Blue-Green部署降低Downtime和风险</a></li>
 
-<li><a href="./deploy-apps/streaming-logs.html">Application Logging in Cloud Foundry</a></li>
+<li><a href="./deploy-apps/streaming-logs.html">Cloud Foundry中的应用程序日志记录</a></li>
 
-<li><a href="./deploy-apps/troubleshoot-app-health.html" class="subnav">Troubleshooting Application Deployment and Health</a></li>
+<li><a href="./deploy-apps/troubleshoot-app-health.html" class="subnav">对应用程序部署和健康的Troubleshooting</a></li>
 
-<li><a href="./deploy-apps/app-ssh-overview.html" class="subnav">Application SSH Overview</a></li>
+<li><a href="./deploy-apps/app-ssh-overview.html" class="subnav">应用程序 SSH 概述</a></li>
 
-<li><a href="./deploy-apps/ssh-apps.html" class="subnav">Accessing Apps with SSH</a></li>
+<li><a href="./deploy-apps/ssh-apps.html" class="subnav">用SSH访问应用程序</a></li>
 
-<li><a href="./deploy-apps/ssh-services.html" class="subnav">Accessing Services with SSH</a></li>
+<li><a href="./deploy-apps/ssh-services.html" class="subnav">用SSH访问服务</a></li>
 
-<li><a href="./deploy-apps/trusted-system-certificates.html" class="subnav">Trusted System Certificates</a></li>
+<li><a href="./deploy-apps/trusted-system-certificates.html" class="subnav">可信的系统证书(certificates)</a></li>
 </ul>
 ___
 
-## <a id='services'></a>Services ##
+## <a id='services'></a>服务 ##
 
-* <a href="./services/index.html">Services Overview</a>
+* <a href="./services/index.html">服务概述</a>
 
-* <a href="./services/application-binding.html" class="subnav">Delivering Service Credentials to an Application</a>
+* <a href="./services/application-binding.html" class="subnav">给应用程序发布服务的证书(credentials)</a>
 
-* <a href="./services/managing-services.html" class="subnav">Managing Service Instances</a>
+* <a href="./services/managing-services.html" class="subnav">管理服务实例</a>
 
-* <a href="./services/service-keys.html" class="subnav">Managing Service Keys</a>
+* <a href="./services/service-keys.html" class="subnav">管理服务的key</a>
 
-* <a href="./services/user-provided.html" class="subnav">User-Provided Service Instances</a>
+* <a href="./services/user-provided.html" class="subnav">用户提供的服务实例</a>
 
-* <a href="./services/log-management.html" class="subnav">Streaming Application Logs to Log Management Services</a>
+* <a href="./services/log-management.html" class="subnav">将应用的日志stream到日志管理服务</a>
 
-* <a href="./services/log-management-thirdparty-svc.html" class="subnav">Service-Specific Instructions for Streaming Application Logs</a>
+* <a href="./services/log-management-thirdparty-svc.html" class="subnav">将应用日志stream时关于具体服务的说明</a>
 
-* <a href="./services/integrate-splunk.html" class="subnav">Streaming Application Logs to Splunk</a>
+* <a href="./services/integrate-splunk.html" class="subnav">将应用的日志stream到Splunk</a>
 
-* <a href="./services/fluentd.html" class="subnav">Streaming Application Logs with Fluentd</a>
+* <a href="./services/fluentd.html" class="subnav">将应用的日志stream到Fluentd</a>
 
-* <a href="./services/play-service-bindings.html" class="subnav">Configuring Play Framework Service Connections</a>
+* <a href="./services/play-service-bindings.html" class="subnav">配置Play框架服务连接</a>
 
-* <a href="./services/migrate-db.html" class="subnav">Migrating a Database in Cloud Foundry</a>
+* <a href="./services/migrate-db.html" class="subnav">在Cloud Foundry中迁移数据库</a>
