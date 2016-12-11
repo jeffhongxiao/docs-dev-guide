@@ -1,67 +1,84 @@
 ---
-title: Considerations for Designing and Running an Application in the Cloud
+title: 在云环境上设计和运行应用程序的注意事项
 owner: CAPI
 ---
 
 <strong><%= modified_date %></strong>
 
-## <a id="app-design"></a>Application Design for the Cloud ##
+## <a id="app-design"></a>为云环境设计应用程序 ##
 
-Applications written in supported application frameworks often run unmodified on
-Cloud Foundry, if the application design follows a few simple guidelines.
-Following these guidelines makes an application cloud-friendly, and facilitates
-deployment to Cloud Foundry and other cloud platforms.
+用支持的应用程序框架所写的应用通常不需修改就可以运行在Cloud Foundry上, 如果应用程序的设计遵循几条简单的指南准则
+遵循这些准则会让应用对云环境友好, 并且为部署到Cloud Foundry和其他云平台提供便利.
 
-The following guidelines represent best practices for developing modern applications for cloud platforms. For more detailed reading about good app design for the cloud, see [The Twelve-Factor App](http://www.12factor.net).
+下列指南代表了为云平台开发现代应用程序的最佳实践.
+更详细的关于为云设计app的信息, 参见[The Twelve-Factor App](http://www.12factor.net).
 
-For more information about the features of HTTP routing handled by the Cloud Foundry router, see the [HTTP Routing](../../concepts/http-routing.html) topic. For more information about the lifecycle of application containers, see the [Application Container Lifecycle](app-lifecycle.html) topic.
+关于Cloud Foundry的路由如何处理HTTP路由这一特性的更多信息, 参见[HTTP 路由](../../concepts/http-routing.html).
 
-### <a id="filesystem"></a>Avoid Writing to the Local File System ###
+### <a id="filesystem"></a>避免写入到本地文件系统 ###
 
-Applications running on Cloud Foundry should not write files to the local file
-system for the following reasons:
+由于以下原因, 运行在Cloud Foundry上的应用不应写入文件得到本地文件系统:
 
-* **Local file system storage is short-lived.** When an application instance crashes or stops, the resources assigned to that instance are reclaimed by the platform including any local disk changes made since the app started. When the instance is restarted, the application will start with a new disk image. Although your application can write local files while it is running, the files will disappear after the application restarts.
+* **本地文件系统存储存在时间很短.**
+当应用实例崩溃或停止时,分配给该实例的资源会被系统回收, 这包括自app启动以来的任何的本地磁盘修改.
+当实例重启时, 应用会用一个新的硬盘镜像启动.
+虽然你的应用程序可以在运行是写入本地数据, 写入的文件会在应用重启后消失.
 
-* **Instances of the same application do not share a local file system.** Each application instance runs in its own isolated container. Thus a file written by one instance is not visible to other instances of the same application. If the files are temporary, this should not be a problem. However, if your application needs the data in the files to persist across application restarts, or the data needs to be shared across all running instances of the application, the local file system should not be used. We recommend using a shared data service like a database or blobstore for this purpose.
+* **同一应用程序的不同实例间不分享同一个本地文件系统.**
+每个应用实例运行在其自己的隔离的容器内.
+因此, 一个实例所写入的文件不会被同一个应用的其他实例所见.
+对临时文件, 这不是个问题.
+然而当你的应用程序需要持久化以应对程序重启,
+或是数据需要被所有应用程序的运行中实例共享时,
+就无法使用本地文件系统.
+我们推荐使用共享的数据服务,例如数据库或者blobstore.
 
-For example, instead of using the local file system, you can use a Cloud
-Foundry service such as the MongoDB document database or a relational database like MySQL or Postgres.
-Another option is to use cloud storage providers such as [Amazon S3](http://aws.amazon.com/s3/), [Google Cloud Storage](https://cloud.google.com/products/cloud-storage), [Dropbox](https://www.dropbox.com/developers), or [Box](http://developers.box.com/).
-If your application needs to communicate across different instances of itself, consider a cache like Redis or a messaging-based architecture with RabbitMQ.
+例如, 你可以使用MongoDB文档数据库或者MySQL或Postgres关系数据库这样的Cloud Foundry服务替代本地文件系统.
+另外一个选项是使用云存储, 例如[Amazon S3](http://aws.amazon.com/s3/), [Google Cloud Storage](https://cloud.google.com/products/cloud-storage), [Dropbox](https://www.dropbox.com/developers), 或[Box](http://developers.box.com/).
+如果你的应用需要在其不同实例间通信, 可以考虑Redis这样的cache系统, 或者用RabbitMQ的基于messaging的系统架构.
 
-### <a id="shared-cookies"></a>Cookies Accessible across Applications ###
 
-In an environment with shared domains, cookies might be accessible across applications.
+### <a id="shared-cookies"></a>不同应用间访问cookies###
 
-<%= vars.cookies_shared_domain_1 %> Many tracking tools such as Google Analytics and Mixpanel use the highest available domain to set their cookies. <%= vars.cookies_shared_domain_2 %> For example, an application at <code>my-app.<%= vars.app_domain %></code> might be able to access the cookies for an application at <code>your-app.<%= vars.app_domain %></code>.
+在共享域名的环境中, cookies可以在不同的应用之间访问.
 
-Consider whether you want your applications or tools that use cookies to set and store the cookies at the highest available domain.
+<%= vars.cookies_shared_domain_1 %>
+许多跟踪工具,例如Google Analytics 和 Mixpanel 都使用可用的最高域名来设置cookies.
+<%= vars.cookies_shared_domain_2 %>
 
-### <a id="ports"></a>Port Limitations ###
+例如, 在<code>my-app.<%= vars.app_domain %></code>的应用可能可以访问<code>your-app.<%= vars.app_domain %></code>应用所用的cookies.
 
-Clients connect to applications running on Cloud Foundry by making requests to URLs associated with the application. Cloud Foundry allows HTTP requests to applications on ports 80 and 443. For more information, see the [Routes and Domains](routes-domains.html) topic.  
+考虑你是否想要你所使用cookies的应用或工具来使用可用的最高域名来设置和存储cookies.
 
-Cloud Foundry also supports WebSocket handshake requests over HTTP containing the `Upgrade` header. The Cloud Foundry router handles the upgrade and initiates a TCP connection to the application to form a WebSocket connection. 
+
+### <a id="ports"></a>端口限制 ###
+
+客户端通过想与应用相关联的URL发送请求来连接到运行在Cloud Foundry上的应用程序.
+Cloud Foundry允许发往端口80和443的HTTP请求.
+更多信息, 参见[路由和域](routes-domains.html).
+
+Cloud Foundry还支持通过HTTP的包含`Upgrade`头的WebSocket握手请求.
+Cloud Foundry路由处理upgrade, 并发起TCP连接到应用程序, 以形成WebSocket连接.
 
 <%= vars.port_limitations %>
 
-### <a id="moving-apps"></a> Cloud Foundry Updates and Your Application ###
+### <a id="moving-apps"></a> Cloud Foundry 更新 和 你的应用程序 ###
 
-For application management purposes, Cloud Foundry may need to stop and restart your application instances. If this occurs, Cloud Foundry performs the following steps:
+由于应用程序管理的目的, Cloud Foundry可能需要停止和重启动你的应用实例.
+当这发生时, Cloud Foundry会进行下列步骤:
 
-1. Cloud Foundry sends a single <code>termination signal</code> to the root process that your start command invokes.
+1. Cloud Foundry 发送单个<code>termination signal</code>给你start命令发起的root进程.
 
-1. Cloud Foundry waits 10 seconds to allow your application to cleanly shut down any child processes and handle any open connections.
+1. Cloud Foundry等待10秒钟,以允许你的应用干净的关闭任何子进程以及处理任何开放的连接.
 
-1. After 10 seconds, Cloud Foundry forcibly shuts down your application.
+1. 10秒钟后, Cloud Foundry强行关闭你的应用程序.
 
-Your application should accept and handle the termination signal to ensure that it shuts down gracefully.
+你的应用应该接受和处理termination signal以确保它能正常关闭(gracefully shutdown).
 
-## <a id="exclude"></a>Ignore Unnecessary Files When Pushing ##
+## <a id="exclude"></a>当Push代码时ignore不需要的文件 ##
 
-By default, when you push an application, all files in the application’s project
-directory tree are uploaded to your Cloud Foundry instance, except version control or configuration files with the following file extensions:
+默认情况下, 当你push一个应用程序时,所有该程序项目目录树下的文件都会上传到Cloud Foundry的实例上,
+除了包含下列文件扩展名的版本控制和配置文件:
 
 * `.cfignore`
 * `_darcs`
@@ -72,40 +89,32 @@ directory tree are uploaded to your Cloud Foundry instance, except version contr
 * `/manifest.yml`
 * `.svn`
 
-If the application directory contains other files (such as `temp` or `log`
-files), or complete subdirectories that are not required to build and run your
-application, the best practice is to exclude them using a `.cfignore` file.
-(`.cfignore` is similar to git’s `.gitignore`, which allows you to exclude files
-and directories from git tracking.)
-Especially with a large application, uploading unnecessary files slows down
-application deployment.
+如果应用目录包含其他文件(例如`temp`或`log`文件), 或者包含整个不需要构建和运行应用的目录,
+最佳实践是将其用`.cfignore`文件排除在外.
+(`.cfignore`与git的`.gitignore`类似, 后者允许你在git跟踪中排除文件和目录)
 
-Specify the files or file types you wish to exclude from upload in a text file,
-named `.cfignore`, in the root of your application directory structure.
-For example, these lines exclude the "tmp" and "log" directories.
+尤其是对于大的应用, 上传不需要的文件会使应用部署变慢.
+
+在应用程序目录结构的根目录,建立名为`.cfignore`的文本文件, 并指定你希望从上传中排除的文件或文件类型.
+例如, 下列排除了"tmp"和"log"目录.
 
 <pre class="terminal">
     tmp/
     log/
 </pre>
 
-The file types you will want to exclude vary, based on the application
-frameworks you use.
-The `.gitignore` templates for common frameworks, available at
-https://github.com/github/gitignore, are a useful starting point.
+你要排除的文件类型跟你使用的应用框架有关.
+在https://github.com/github/gitignore 的常见框架的`.gitignore`模板, 是个有用的开始.
 
-## <a id="increase-availability"></a>Run Multiple Instances to Increase Availability ##
+## <a id="increase-availability"></a>运行多个实例以增加可用性 ##
 
-When a Diego cell <%= vars.buildpacks_index_dea %> is upgraded, the applications running on it are shut down gracefully,
-then restarted on another Diego cell <%= vars.buildpacks_index_dea %>. To avoid the risk of an application being unavailable
-during a Cloud Foundry upgrade processes, you should run more than one instance of the
-application.
+当Diego cell<%= vars.buildpacks_index_dea %> 升级时, 运行其上的应用会被正常关闭(shut down gracefully),
+然后在在另一个Diego cell <%= vars.buildpacks_index_dea %>上重启 .
+为避免程序在Cloud Foundry升级过程中不可用的风险,
+你应当为应用程序运行多于一个实例.
 
-## <a id="buildpacks"></a>Using Buildpacks ##
+## <a id="buildpacks"></a>使用 Buildpacks ##
+一个buildpack由一组检测和配置脚本组成, 这些脚本为你的应用提供了框架和运行时支持.
+当你部署一个需要buildpack的应用时, Cloud Foundry会在运行应用的Diego cell <%= vars.buildpacks_index_dea %>上安装这个buildpack.
 
-A buildpack consists of bundles of detection and configuration scripts that
-provide framework and runtime support for your applications.
-When you deploy an application that needs a buildpack, Cloud Foundry installs
-the buildpack on the Diego cell <%= vars.buildpacks_index_dea %> where the application runs.
-
-For more information, see the [Buildpacks](../../buildpacks/) topic.
+更多信息, 参见[Buildpacks](../../buildpacks/).
